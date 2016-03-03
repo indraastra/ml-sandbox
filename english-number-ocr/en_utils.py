@@ -14,16 +14,19 @@ def get_fonts():
 def load_font(path, size=64):
     return ImageFont.truetype(path, size)
 
-def glyph_to_image(glyph, font, size=64, mode='1'):
-    im = Image.new(mode, (size, size), 'white')
+def glyph_to_image(glyph, font, size=64, mode='L'):
+    im = Image.new(mode, (size, size), 'black')
     draw = ImageDraw.Draw(im)
     # Vertically and horizontally center glyph in canvas, accounting for offset.
     w, h = font.getsize(glyph)
     x, y = font.getoffset(glyph)
-    draw.text(((size-w-x)/2,(size-h-y)/2), glyph, font=font)
+    draw.text(((size-w-x)/2,(size-h-y)/2), glyph, font=font, fill='white')
     return im
 
 def image_to_numpy(image):
+    pass
+
+def numpy_to_image(array):
     pass
 
 
