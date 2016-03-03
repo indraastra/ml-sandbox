@@ -62,5 +62,7 @@ target/
 .ipynb_checkpoints
 
 # Project stuff.
+*.swp
+*.swo
 *.ttf
 *.zip
