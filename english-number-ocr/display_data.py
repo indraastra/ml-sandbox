@@ -1,7 +1,8 @@
 import math
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
-import scipy.misc as smisc
 
 def display_data(images):
     # Select as many images as can neatly fit in a square display.
@@ -21,4 +22,11 @@ def display_data(images):
             start_y = j * size;
             combined_image[start_y:(start_y + size),
                            start_x:(start_x + size)] = image.reshape((size, size), order='F')
-    smisc.imshow(combined_image)
+
+    # NOTE: IF this is failing to display anything, there's a known issue on Ubuntu.
+    # See:
+    # http://www.pyimagesearch.com/2015/08/24/resolved-matplotlib-figures-not-showing-up-or-displaying/
+    plt.set_cmap('gray')
+    plt.axis('off')
+    plt.imshow(combined_image, interpolation='nearest')
+    plt.show()
