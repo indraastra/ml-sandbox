@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-def display_data(images):
+def display_data(images, order='F'):
     # Select as many images as can neatly fit in a square display.
     w = int(math.sqrt(len(images)))
     h = int(len(images) / w)
@@ -21,7 +21,7 @@ def display_data(images):
             start_x = i * size;
             start_y = j * size;
             combined_image[start_y:(start_y + size),
-                           start_x:(start_x + size)] = image.reshape((size, size), order='F')
+                           start_x:(start_x + size)] = image.reshape((size, size), order=order)
 
     # NOTE: IF this is failing to display anything, there's a known issue on Ubuntu.
     # See:

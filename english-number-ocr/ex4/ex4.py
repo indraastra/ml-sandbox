@@ -26,7 +26,7 @@ num_labels = 10;          # 10 labels, from 1 to 10
 # Load Training Data
 print('> Loading and Visualizing Data ...\n')
 
-data = sio.loadmat('data/ex4data1.mat');
+data = sio.loadmat('../data/fontdata_small.mat');
 X = data['X']
 # This -1 correction is for going from labels in Octave to zero-indexed labels
 # in python.
@@ -48,7 +48,7 @@ input('\nProgram paused. Press enter to continue.\n');
 print('> Loading Saved Neural Network Parameters ...')
 
 # Load the weights into variables Theta1 and Theta2
-weights = sio.loadmat('data/ex4weights.mat');
+weights = sio.loadmat('../data/ex4weights.mat');
 Theta1 = weights['Theta1']
 Theta2 = weights['Theta2']
 
@@ -236,3 +236,7 @@ pred = predict(Theta1, Theta2, X);
 accuracy = np.mean(pred == y) * 100
 
 print('\nTraining Set Accuracy: {}\n'.format(accuracy));
+
+
+## == Extra! ==
+sio.savemat('../data/weights.mat', {'Theta1': Theta1, 'Theta2': Theta2})
