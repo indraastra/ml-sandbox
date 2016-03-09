@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import sparse
 
-from sigmoid import sigmoid, sigmoid_gradient
-from utils import reshape_params, flatten_params
+from .sigmoid import sigmoid, sigmoid_gradient
+from .utils import reshape_params, flatten_params
 
 def nn_cost_function(nn_params, input_layer_size, hidden_layer_size,
                      num_labels, X, y, regularization):

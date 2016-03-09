@@ -4,9 +4,9 @@ import random
 
 import click
 import numpy as np
-import scipy.io as sio
 
 from ex4.display_data import display_data
+from ex4.utils import load_training_data
 
 
 ## =========== Part 1: Loading and Visualizing Data =============
@@ -20,12 +20,7 @@ def visualize_data(input):
     # Load Training Data
     print('> Loading and Visualizing Data ...\n')
 
-    data = sio.loadmat(input);
-    X = data['X']
-    # This -1 correction is for going from labels in Octave to zero-indexed labels
-    # in python.
-    y = data['y'].flatten() - 1
-
+    X, _ = load_training_data(input)
     m = X.shape[0]
 
     # Randomly select 100 data points to display

@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.io as sio
 
 def reshape_params(nn_params, input_layer_size, hidden_layer_size, num_labels):
     # Reshape weights from flattened param vectors.
@@ -10,5 +11,13 @@ def reshape_params(nn_params, input_layer_size, hidden_layer_size, num_labels):
 
     return Theta1, Theta2
 
+
 def flatten_params(Theta1, Theta2):
     return np.concatenate((Theta1.ravel(), Theta2.ravel()))
+
+
+def load_training_data(input):
+    data = sio.loadmat(input);
+    X = data['X']
+    y = data['y'].flatten()
+    return (X, y)
