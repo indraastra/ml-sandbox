@@ -19,3 +19,4 @@ Test Set Accuracy: 91.17
 ```
 
 ![Sample training data](images/font-data-viz.png)
+![Web UI](images/web-ui-1.png)

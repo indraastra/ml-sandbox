@@ -3,8 +3,7 @@ import random
 import string
 
 import numpy as np
-from PIL import ImageFont, ImageDraw
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw, ImageOps
 
 FONT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
 FONT_BLACKLIST = set([
@@ -31,7 +30,9 @@ def glyph_to_image(glyph, font, size=64, mode='L'):
     return im
 
 def image_to_numpy(image):
-    return np.array(image.getdata(), np.float64) / 255
+    image = ImageOps.grayscale(image)
+    array = np.array(image.getdata(), np.float64) / 255
+    return array.reshape(1, array.size)
 
 def numpy_to_image(array):
     pass

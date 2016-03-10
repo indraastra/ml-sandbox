@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Sketch.js - Simple Canvas-based Drawing for jQuery</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://intridea.github.io/sketch.js/lib/sketch.js"></script>
+
+    <style>
+        #sketch {
+          border: 1px solid #ccc;
+          background: black;
+        }
+    </style>
+  </head>
+
+  <body>
+      <div>
+          <canvas id="sketch" width="200" height="200"></canvas>
+          <div>
+              <button id="submit-sketch" onclick="postImage()">
+                  Classify! 
+              </button>
+              <button id="clear-sketch">
+                  Clear! 
+              </button>
+          </div>
+          <div id="results">
+          </div>
+      </div>
+      <script type="text/javascript">
+          $(function() {
+              $('#sketch').sketch({defaultColor: 'white', defaultSize: 20});
+              $('#clear-sketch').click(clearImage);
+          });
+          function clearImage() {
+              var canvas = $('#sketch')[0];
+              var ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              $('#sketch').sketch().actions = [];
+          }
+          function postImage() {
+            console.log('Submitting for classification!');
+            var dataURL = $('#sketch')[0].toDataURL("image/png");
+            $.post('/classify', {'imageb64': dataURL}).done(function(data) {
+                console.log(data);
+                $('#results').html(data['results'][0]);
+            });
+          }
+      </script>
+  </body>
+
+</html>
