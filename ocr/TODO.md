@@ -10,3 +10,7 @@
 - Generate data for all numbers in all fonts => write to .dat
 - Randomly divide into training and test sets
 - Use algorithm from above
+
+# UI
+- Live classification from canvas drawing
+- Translate and resize canvas image
