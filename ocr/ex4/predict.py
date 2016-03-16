@@ -2,7 +2,7 @@ import numpy as np
 
 from .sigmoid import sigmoid
 
-def predict(Theta1, Theta2, X):
+def predict(Theta1, Theta2, X, raw=False):
     m = X.shape[0]
     num_labels = Theta2.shape[0]
 
@@ -14,4 +14,7 @@ def predict(Theta1, Theta2, X):
 
     # Return the index of the highest-probability class, which conveniently
     # is also the class label.
-    return h2.argmax(axis=1);
+    if raw:
+        return h2
+    else:
+        return h2.argmax(axis=1);

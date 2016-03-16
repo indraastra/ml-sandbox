@@ -29,10 +29,11 @@ def glyph_to_image(glyph, font, size=64, mode='L'):
     draw.text(((size-w-x)/2, (size-h-y)/2), glyph, font=font, fill='white')
     return im
 
-def image_to_numpy(image):
+def image_to_numpy(image, order='F'):
     image = ImageOps.grayscale(image)
     array = np.array(image.getdata(), np.float64) / 255
-    return array.reshape(1, array.size)
+    array = array.reshape(image.size[0], image.size[1], order='C')
+    return array.reshape(1, array.size, order=order)
 
 def numpy_to_image(array):
     pass

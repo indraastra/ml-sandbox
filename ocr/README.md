@@ -18,5 +18,9 @@ Loading saved Neural Network parameters ...
 Test Set Accuracy: 91.17
 ```
 
+For matplotlib issues on Ubuntu, see [this guide](http://www.pyimagesearch.com/2015/08/24/resolved-matplotlib-figures-not-showing-up-or-displaying/)
+to getting figures displaying correctly.
+
 ![Sample training data](images/font-data-viz.png)
 ![Web UI](images/web-ui-1.png)
+

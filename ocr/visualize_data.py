@@ -16,17 +16,19 @@ from ex4.utils import load_training_data
 
 @click.command()
 @click.argument('input')
-def visualize_data(input):
+@click.option('--source', default='numpy',
+              type=click.Choice(['numpy', 'matlab']))
+def visualize_data(input, source):
     # Load Training Data
     print('> Loading and Visualizing Data ...\n')
 
-    X, _ = load_training_data(input)
+    X, y = load_training_data(input, source)
     m = X.shape[0]
 
     # Randomly select 100 data points to display
     sel = random.sample(range(m), 100)
 
-    display_data(X[sel, :], order='C');
+    display_data(X[sel, :], order='F');
 
 
 if (__name__ == '__main__'):

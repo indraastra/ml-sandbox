@@ -28,9 +28,10 @@ print('> Loading and Visualizing Data ...\n')
 
 data = sio.loadmat('../data/fontdata_small.mat');
 X = data['X']
-# This -1 correction is for going from labels in Octave to zero-indexed labels
+# This correction is for going from labels in Octave to zero-indexed labels
 # in python.
-y = data['y'].flatten() - 1
+y = data['y'].flatten()
+y[y == 10] = 0
 
 m = X.shape[0]
 

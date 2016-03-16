@@ -10,7 +10,7 @@ from predict import load_classifier
 
 IMG_PREFIX = "data:image/png;base64,"
 IMG_SIZE = 20
-IMG_WEIGHTS = 'data/fontweights_small_full.mat'
+IMG_WEIGHTS = 'weights/ex4weights_new.mat'
 
 app = Flask(__name__)
 classifier = load_classifier(IMG_WEIGHTS)
@@ -35,7 +35,9 @@ def classify():
     image = Image.open(BytesIO(b64decode(data)))
     image = image.resize((IMG_SIZE, IMG_SIZE))
     image = image_to_numpy(image)
+    print(image.reshape(IMG_SIZE, IMG_SIZE, order='F').astype(np.uint8))
     res = classifier(image).tolist()
+    print(res)
     results['results'] = res
     return jsonify(results)
 

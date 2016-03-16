@@ -3,3 +3,4 @@ numpy
 scipy
 Pillow
 click
+flask

@@ -19,9 +19,11 @@ def load_classifier(weights_file):
 @click.command()
 @click.argument('test_data', type=click.Path())
 @click.argument('weights', type=click.Path())
-def predict(test_data, weights):
+@click.option('--source', default='numpy',
+              type=click.Choice(['numpy', 'matlab']))
+def predict(test_data, weights, source):
     ## === Load and visualize the test data. ===
-    X, y = load_training_data(test_data)
+    X, y = load_training_data(test_data, source)
 
     ## === Load NN weights. ===
     print('Loading saved Neural Network parameters ...')
@@ -32,6 +34,10 @@ def predict(test_data, weights):
     accuracy = np.mean(pred == y) * 100
     print('Test Set Accuracy:', accuracy)
 
+    example = (X[0, :].reshape(20, 20, order='F').round().astype(np.uint8)) 
+    print(example)
+    pred = classify(example.reshape(1, 400, order='F'))
+    print(pred, y[0])
 
 if ( __name__ == '__main__' ):
     predict()

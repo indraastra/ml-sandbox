@@ -18,17 +18,33 @@ from ex4.predict import predict
 @click.option('--image_pixels', default=20)
 @click.option('--hidden_layer_size', default=25)
 @click.option('--num_labels', default=10)
-def train(input, output, image_pixels, hidden_layer_size, num_labels):
+@click.option('--max_iterations', default=100)
+@click.option('--source', default='numpy',
+              type=click.Choice(['numpy', 'matlab']))
+def train(input, output, image_pixels,
+          hidden_layer_size, num_labels, max_iterations, source):
     input_layer_size  = image_pixels * image_pixels  # NxN input images
 
     ## === Load and visualize the training data. ===
-    X, y = load_training_data(input)
-    m = X.shape[0]
+    X, y = load_training_data(input, source)
+
+    # Shuffle data.
+    Z = np.c_[X, y]
+    np.random.shuffle(Z)
+    X, y = Z[:,:-1], Z[:,-1].astype(np.uint8)
+
+    m = int(X.shape[0] * .9)
+
+    # Split into training and validation sets.
+    X_train, X_val = X[:m], X[m:]
+    y_train, y_val = y[:m], y[m:]
+    X = X_train
+    y = y_train
 
     # Randomly select 100 data points to display.
     print('Visualizing 100 random training data samples ...\n')
     sel = random.sample(range(m), 100)
-    display_data(X[sel, :], order='C');
+    display_data(X[sel, :], order='F');
 
     ## === Initialize weights of NN randomly. ===
     print('Initializing Neural Network Parameters ...\n')
@@ -41,7 +57,7 @@ def train(input, output, image_pixels, hidden_layer_size, num_labels):
 
     ## === Train NN. ===
     opts = {
-        'maxiter': 50,
+        'maxiter': max_iterations,
         'disp': True
     }
     progress = click.progressbar(length=opts['maxiter'])
@@ -75,6 +91,11 @@ def train(input, output, image_pixels, hidden_layer_size, num_labels):
     pred = predict(Theta1, Theta2, X);
     accuracy = np.mean(pred == y) * 100
     print('Training Set Accuracy: {}\n'.format(accuracy));
+
+    ## === Predict labels for validation data ===
+    pred = predict(Theta1, Theta2, X_val);
+    accuracy = np.mean(pred == y_val) * 100
+    print('Validation Set Accuracy: {}\n'.format(accuracy));
 
     ## == Save weights! ==
     print('Saving out Neural Network weights.\n')
