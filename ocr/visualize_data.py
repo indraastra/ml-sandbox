@@ -6,7 +6,7 @@ import click
 import numpy as np
 
 from ex4.display_data import display_data
-from ex4.utils import load_training_data
+from ex4.utils import load_data
 
 
 ## =========== Part 1: Loading and Visualizing Data =============
@@ -22,7 +22,7 @@ def visualize_data(input, source):
     # Load Training Data
     print('> Loading and Visualizing Data ...\n')
 
-    X, y = load_training_data(input, source)
+    X, y = load_data(input, source)
     m = X.shape[0]
 
     # Randomly select 100 data points to display

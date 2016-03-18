@@ -8,7 +8,7 @@ import numpy as np
 import scipy.io as sio
 
 from ex4.display_data import display_data
-from ex4.utils import load_training_data
+from ex4.utils import load_data
 
 
 FORMAT = {
@@ -25,7 +25,7 @@ FORMAT = {
 @click.option('--target', default='numpy',
               type=click.Choice(['numpy', 'matlab']))
 def convert_data(input, output, source, target):
-    X, y = load_training_data(input, source)
+    X, y = load_data(input, source)
     m = X.shape[0]
 
     # Load Training Data
