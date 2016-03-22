@@ -33,6 +33,6 @@ $ python web.py
 For matplotlib issues on Ubuntu, see [this guide](http://www.pyimagesearch.com/2015/08/24/resolved-matplotlib-figures-not-showing-up-or-displaying/)
 to getting figures displaying correctly.
 
+![Web UI 2](images/web-ui-2.png)
 ![Sample training data](images/font-data-viz.png)
-![Web UI](images/web-ui-1.png)
 

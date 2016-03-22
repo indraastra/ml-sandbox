@@ -5,48 +5,26 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="http://intridea.github.io/sketch.js/lib/sketch.js"></script>
 
-    <style>
-        #sketch {
-          border: 1px solid #ccc;
-          background: black;
-        }
-    </style>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
 
   <body>
-      <div>
-          <canvas id="sketch" width="200" height="200"></canvas>
-          <div>
-              <button id="submit-sketch" onclick="postImage()">
-                  Classify! 
+      <div id="ui">
+          <canvas id="sketch" width="400" height="400"></canvas>
+          <div id="buttons">
+              <button id="submit-sketch">
+                  Classify 
               </button>
               <button id="clear-sketch">
-                  Clear! 
+                  Clear 
               </button>
           </div>
           <div id="results">
           </div>
       </div>
-      <script type="text/javascript">
-          $(function() {
-              $('#sketch').sketch({defaultColor: 'white', defaultSize: 20});
-              $('#clear-sketch').click(clearImage);
-          });
-          function clearImage() {
-              var canvas = $('#sketch')[0];
-              var ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              $('#sketch').sketch().actions = [];
-          }
-          function postImage() {
-            console.log('Submitting for classification!');
-            var dataURL = $('#sketch')[0].toDataURL("image/png");
-            $.post('/classify', {'imageb64': dataURL}).done(function(data) {
-                console.log(data);
-                $('#results').html(data['results'][0]);
-            });
-          }
-      </script>
+      <script src="{{ url_for('static', filename='js/draw.js') }}"></script>
   </body>
 
 </html>
