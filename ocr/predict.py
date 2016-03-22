@@ -9,7 +9,16 @@ from ex4.utils import reshape_params, flatten_params, load_data
 from ex4.sigmoid import sigmoid
 
 
-def predict(classifier, X, limit=1):
+def predict_best(classifier, X):
+    label, _ = predict_top_n(classifier, X, 1)
+    return label.flatten()
+
+# For backwards compatibility...
+predict = lambda c, X, l=1: predict_best(c, X)
+
+
+def predict_top_n(classifier, X, limit=10):
+    '''Returns a list of sorted (label, score) tuples.'''
     Theta1 = classifier['Theta1']
     Theta2 = classifier['Theta2']
 
@@ -24,10 +33,8 @@ def predict(classifier, X, limit=1):
 
     # Return top n classes.
     top_n = (-h2).argsort(axis=1)[:, :limit]
-    if limit == 1:
-        return top_n.flatten()
-    else:
-        return top_n
+    rows = np.tile(np.arange(len(h2)), (limit, 1)).T
+    return top_n, h2[rows, top_n]
 
 
 def load_classifier(params_file):
