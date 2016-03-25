@@ -4,6 +4,7 @@ import itertools
 
 import click
 import numpy as np
+import PIL
 import random
 import scipy.io as sio
 
@@ -34,10 +35,11 @@ def generate_data(output, num_fonts, char_set, pixels):
     print("Generating font-based training data...")
     with click.progressbar(fonts) as pb:
         for i, font_path in enumerate(pb):
-            font = load_font(font_path, pixels - 4)
+            font = load_font(font_path, pixels * 8 - 4)
             for j, glyph in enumerate(glyphs):
                 try:
-                    im = glyph_to_image(glyph, font, pixels)
+                    im = glyph_to_image(glyph, font, pixels * 8)
+                    im = im.resize((pixels, pixels), resample=PIL.Image.ANTIALIAS)
                     im_np = image_to_numpy(im)
                     idx = i * len(glyphs) + j
                     X[idx, :] = im_np

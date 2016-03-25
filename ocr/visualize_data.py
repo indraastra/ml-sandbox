@@ -18,11 +18,15 @@ from ex4.utils import load_data
 @click.argument('input')
 @click.option('--source', default='numpy',
               type=click.Choice(['numpy', 'matlab']))
-def visualize_data(input, source):
+@click.option('--label', type=int, default=None)
+def visualize_data(input, source, label):
     # Load Training Data
     print('> Loading and Visualizing Data ...\n')
 
     X, y = load_data(input, source)
+    if label:
+        X = X[y == label, :]
+        y = y[y == label]
     m = X.shape[0]
 
     # Randomly select 100 data points to display
