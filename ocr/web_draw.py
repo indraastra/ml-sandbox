@@ -5,13 +5,15 @@ from flask import Flask, jsonify, render_template, request
 import numpy as np
 from PIL import Image
 
-from en_utils import image_to_numpy
+from en_utils import image_to_numpy, load_glyph_set
 from predict import load_classifier, predict_top_n
 
 
 IMG_PREFIX = 'data:image/png;base64,'
 IMG_SIZE = 20
-IMG_WEIGHTS = 'weights/ex4weights_new.mat'
+IMG_WEIGHTS = 'weights/letters.mat'
+GLYPH_SET = 'letters'
+GLYPHS = load_glyph_set(GLYPH_SET)
 
 
 app = Flask(__name__)
@@ -39,8 +41,11 @@ def classify():
     image = image_to_numpy(image)
     print(image.reshape(IMG_SIZE, IMG_SIZE, order='F').astype(np.uint8))
     labels, scores = predict_top_n(classifier, image, limit=3)
+
     results['labels'] = labels.tolist()[0]
     results['scores'] = scores.tolist()[0]
+    results['glyphs'] = [GLYPHS[l] for l in results['labels']]
+
     print(results)
     return jsonify(results)
 

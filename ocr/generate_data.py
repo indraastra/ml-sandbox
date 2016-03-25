@@ -7,18 +7,22 @@ import numpy as np
 import random
 import scipy.io as sio
 
-from en_utils import get_fonts, load_font, glyph_to_image, image_to_numpy
+from en_utils import get_fonts, load_glyph_set, load_font, glyph_to_image, image_to_numpy
 
 
 @click.command()
 @click.option('--num_fonts', default=0, help='The number of fonts to generate data for')
+@click.option('--char_set', default='numbers', help='The set of characters to output')
 @click.option('--pixels', default=20, help='Both dimensions of the generated images in pixels')
 @click.argument('output')
-def generate_data(output, num_fonts, pixels):
+def generate_data(output, num_fonts, char_set, pixels):
     fonts = get_fonts()
     if num_fonts:
         fonts = random.sample(fonts, num_fonts)
-    glyphs = '0123456789'
+
+    glyphs = load_glyph_set(char_set)
+    if not glyphs:
+        raise click.BadParameter("Couldn't find character set: {}".format(char_set))
 
     # Allocate space for training data.
     H = len(fonts) * len(glyphs)  # Number of training instances.
