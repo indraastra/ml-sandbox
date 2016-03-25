@@ -12,9 +12,9 @@
 - [DONE] Use algorithm from above
 
 # UI
-- [DONE] Live classification from canvas drawing
+- Live classification from canvas drawing
 - Translate and resize canvas image
-- Provide list of matcher is order of probability
+- [DONE] Provide list of matches is order of probability
 
 # Training/Classification Pipeline
 - Trainer should perform metaparameter optimization

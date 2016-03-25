@@ -1,6 +1,6 @@
 # Ideas
 - Simple control scheme
-    -- Mouse controls angle of ship
+    -- [DONE] Mouse controls angle of ship
     -- Clicking uses boost
     -- Objective is to avoid obstacles and stay alive as long as 
        possible
