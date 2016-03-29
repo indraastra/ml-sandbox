@@ -8,20 +8,20 @@ function NetworkAgent:new(x, y, opts)
     for k, v in pairs(opts) do self[k] = v end
 
     udp = socket.udp()
-	udp:settimeout(0)
+    udp:settimeout(0)
     udp:setsockname(self.address, self.port)
 end
 
 function NetworkAgent:update(dt)
     repeat
-		data, msg = udp:receive()
+        data, msg = udp:receive()
  
-		if data then
+        if data then
             local x, y = data:match("^(%-?[%d.e]*) (%-?[%d.e]*)$")
             assert(x and y)
             self.x, self.y = tonumber(x), tonumber(y)
-		end
-	until not data
+        end
+    until not data
 end
 
 function NetworkAgent:draw()
