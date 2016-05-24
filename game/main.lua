@@ -4,6 +4,10 @@ Timer = require 'hump/timer'
 GameCursor = require 'GameCursor'
 Ship = require 'Ship'
 Trail = require 'Trail'
+NetworkAgent = require 'NetworkAgent'
+
+-- the address and port of the server
+local address, port = "*", 20007
 
 function love.load(arg)
     -- love.window.setMode(600, 600)
@@ -15,8 +19,16 @@ function love.load(arg)
     timer = Timer()
 
     game_objects = {}
-    cursor = createGameObject('GameCursor', 0, 0)
-    ship = createGameObject('Ship', 200, 200)
+    if arg[2] then
+        print("Using network agent!")
+        controller = createGameObject('NetworkAgent', 0, 0,
+                                      {address=address, port=port})
+    else
+        print("Using mouse control!")
+        controller = love.mouse
+    end
+    cursor = createGameObject('GameCursor', 0, 0, {controller=controller})
+    ship = createGameObject('Ship', 200, 200, {controller=controller})
 end
 
 function love.update(dt)
@@ -27,6 +39,7 @@ function love.update(dt)
         game_object:update(dt)
         if game_object.dead then table.remove(game_objects, i) end
     end
+
 end
 
 function love.draw(dt)

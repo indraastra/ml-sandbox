@@ -6,14 +6,15 @@ function Ship:new(x, y, opts)
     self.lin_speed = 3
     self.rot_speed = .05
     self.angle = 0
+    self.dead = false
+    self.controller = love.mouse
 
     local opts = opts or {} -- this handles the case where opts is nil
     for k, v in pairs(opts) do self[k] = v end
-    self.dead = false
 end
 
 function Ship:update(dt)
-    local target_x, target_y = love.mouse.getPosition()
+    local target_x, target_y = self.controller:getPosition()
     local target_angle = math.atan2(target_y - self.y, target_x - self.x)
 
     local da_pos = (target_angle - self.angle) % (math.pi * 2)
