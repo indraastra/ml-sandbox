@@ -30,3 +30,19 @@ def image_windows(image, target_size, minimum_size,
         subimage = image.crop(box)
         subimage = subimage.resize(target_size)
         yield subimage
+
+
+def square_bbox(image):
+    bbox = image.getbbox()
+    if not bbox: return
+
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+    if w > h:
+        diff = w - h
+        bbox = (bbox[0], bbox[1] - diff//2, bbox[2], bbox[3] + diff//2)
+    elif w < h:
+        diff = h - w
+        bbox = (bbox[0] - diff//2, bbox[1], bbox[2] + diff//2, bbox[3])
+
+    return bbox

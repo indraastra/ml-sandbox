@@ -34,7 +34,7 @@ function drawTable(results) {
 }
 
 $(function() {
-    $('#sketch').sketch({defaultColor: 'white', defaultSize: 30});
+    $('#sketch').sketch({defaultColor: 'white', defaultSize: 20});
     $('#clear-sketch').click(clearImage);
     $('#submit-sketch').click(postImage);
     console.log('Initialized!');
