@@ -5,8 +5,8 @@ import random
 import click
 import numpy as np
 
-from ex4.display_data import display_data
-from ex4.utils import load_data
+from matlab_port.display_data import display_data
+from matlab_port.utils import load_data
 
 
 ## =========== Part 1: Loading and Visualizing Data =============
@@ -24,7 +24,7 @@ def visualize_data(input, source, label):
     print('> Loading and Visualizing Data ...\n')
 
     X, y = load_data(input, source)
-    if label:
+    if label is not None:
         X = X[y == label, :]
         y = y[y == label]
     m = X.shape[0]
@@ -32,6 +32,7 @@ def visualize_data(input, source, label):
     # Randomly select 100 data points to display
     sel = random.sample(range(m), 100)
 
+    print(y[sel].reshape((10, 10), order='F'))
     display_data(X[sel, :], order='F');
 
 
