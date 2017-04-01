@@ -15,7 +15,7 @@ find_ext() { find ../tmp/ -name *.$1; }
 cp_files() { xargs -I {} cp {} $1; }
 
 cd data/
-for lang in py cpp java ruby js css html c lua
+for lang in py cpp java rb js css html c lua
 do
 	mkdir $lang
 	find_ext $lang | cp_files $lang

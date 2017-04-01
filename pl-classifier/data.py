@@ -1,44 +1,69 @@
 from collections import defaultdict
 import os
+import re
 
-def clean_str(string):
+###
+# Based on https://github.com/dennybritz/cnn-text-classification-tf/blob/master/data_helpers.py
+###
+
+def tokenize_data(string):
     """
-    Tokenization/string cleaning for all datasets except for SST.
-    Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
+    Tokenization/string cleaning for code.
     """
-    string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)
-    string = re.sub(r"\'s", " \'s", string)
-    string = re.sub(r"\'ve", " \'ve", string)
-    string = re.sub(r"n\'t", " n\'t", string)
-    string = re.sub(r"\'re", " \'re", string)
-    string = re.sub(r"\'d", " \'d", string)
-    string = re.sub(r"\'ll", " \'ll", string)
-    string = re.sub(r",", " , ", string)
-    string = re.sub(r"!", " ! ", string)
-    string = re.sub(r"\(", " \( ", string)
-    string = re.sub(r"\)", " \) ", string)
-    string = re.sub(r"\?", " \? ", string)
+    string = re.sub(r"([^\w\d\s])", r" \1 ", string)
     string = re.sub(r"\s{2,}", " ", string)
-    return string.strip().lower()
+    return string.strip().lower().split(' ')
 
 
 def load_lines(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', errors='ignore') as file:
         for line in file:
-            clean_line = line.strip()
+            clean_line = tokenize_data(line)
             if clean_line: yield clean_line
 
-def load_data(data_dir, per_lang_file_limit=10, train_test_split=0.8):
-    train_data = defaultdict(list)
-    test_data = defaultdict(list)
+
+def load_data(data_dir, per_label_file_limit=1000):
+    """
+    Loads file lines into a dict keyed by language.
+    """
+    data = defaultdict(list)
     for lang in os.listdir(data_dir):
+        print('Loading language: {}'.format(lang))
         lang_dir = os.path.join(data_dir, lang)
-        # Read all lines for `per_lang_file_limit` files in that language.
-        for file_name in os.listdir(lang_dir)[:per_lang_file_limit]:
+        # Read all lines for `per_label_file_limit` files of that label.
+        for file_name in os.listdir(lang_dir)[:per_label_file_limit]:
             file_path = os.path.join(lang_dir, file_name)
-            lines = list(load_lines(file_path))
-            # Send split% to training, (100-split)% to test.
-            split = int(train_test_split * len(lines))
-            train_data[lang].extend(lines[:split])
-            test_data[lang].extend(lines[split:])
-    return train_data, test_data
+            data[lang].extend(load_lines(file_path))
+    return data
+
+
+def label_data(data_dict):
+    all_x = []
+    all_y = []
+    labels = {label: idx for (idx, label) in enumerate(data_dict.keys())}
+    for label, data in data_dict.items():
+        for datum in data:
+            all_x.append(datum)
+            all_y.append(labels[label])
+    return all_x, all_y, sorted(labels.keys(), key=lambda l: labels[l])
+
+
+def batch_iter(data, batch_size, num_epochs, shuffle=True):
+    """
+    Generates a batch iterator for a dataset.
+    """
+    data = np.array(data)
+    data_size = len(data)
+    num_batches_per_epoch = int((len(data)-1)/batch_size) + 1
+    for epoch in range(num_epochs):
+        # Shuffle the data at each epoch
+        if shuffle:
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+            shuffled_data = data[shuffle_indices]
+        else:
+            shuffled_data = data
+        for batch_num in range(num_batches_per_epoch):
+            start_index = batch_num * batch_size
+            end_index = min((batch_num + 1) * batch_size, data_size)
+            yield shuffled_data[start_index:end_index]
+
