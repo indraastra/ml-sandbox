@@ -25,7 +25,9 @@ tf.flags.DEFINE_float('train_val_split', .1,
               'Percentage of the training data to use for validation')
 tf.flags.DEFINE_string('data_directory', './data',
                'Data source organized as one directory of files per label.')
-tf.flags.DEFINE_integer('min_word_frequency', 25, 'Minimum number of occurrences needed to include a word from the data (default: 25)')
+tf.flags.DEFINE_integer('min_word_frequency', 10, 'Minimum number of occurrences needed to include a word from the data (default: 25)')
+tf.flags.DEFINE_integer('max_files_per_label', 100, 'Maximum number of files to read for each label')
+tf.flags.DEFINE_integer('max_tokens_per_line', 100, 'Maximum number of tokens to use from each line')
 
 # Model Hyperparameters
 tf.flags.DEFINE_integer('embedding_dim', 128, 'Dimensionality of character embedding (default: 128)')
@@ -35,7 +37,7 @@ tf.flags.DEFINE_float('dropout_keep_prob', 0.5, 'Dropout keep probability (defau
 tf.flags.DEFINE_float('l2_reg_lambda', 0.0, 'L2 regularization lambda (default: 0.0)')
 
 # Training parameters
-tf.flags.DEFINE_integer('batch_size', 64, 'Batch Size (default: 64)')
+tf.flags.DEFINE_integer('batch_size', 128, 'Batch Size (default: 128)')
 tf.flags.DEFINE_integer('num_epochs', 3, 'Number of training epochs (default: 3)')
 tf.flags.DEFINE_integer('evaluate_every', 100, 'Evaluate model on val set after this many steps (default: 100)')
 tf.flags.DEFINE_integer('checkpoint_every', 100, 'Save model after this many steps (default: 100)')
@@ -57,7 +59,8 @@ print()
 
 # Load data.
 print('Loading data:')
-text_data = data.load_data(FLAGS.data_directory, per_label_file_limit=100)
+text_data = data.load_data(FLAGS.data_directory,
+                           per_label_file_limit=FLAGS.max_files_per_label)
 x_text, y, labels = data.label_data(text_data)
 print('Num labels: {}'.format(len(labels)))
 print()
@@ -67,20 +70,24 @@ def passthrough_tokenizer(iter):
     for tokens in iter:
         yield tokens
 
-max_document_length = max(len(l) for l in x_text)
+max_document_length = min(max(len(l) for l in x_text), FLAGS.max_tokens_per_line)
 print('Max document length: {:d}'.format(max_document_length))
 vocab_processor = learn.preprocessing.VocabularyProcessor(
         max_document_length,
         tokenizer_fn=passthrough_tokenizer,
         min_frequency=FLAGS.min_word_frequency)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
-y = np.array(y).reshape((len(y), 1))
+y = np.array(y)
 print("Vocabulary Size: {:d}".format(len(vocab_processor.vocabulary_)))
 
 # Shuffle data.
 shuffle_indices = np.random.permutation(np.arange(len(y)))
 x_shuffled = x[shuffle_indices]
 y_shuffled = y[shuffle_indices]
+#x_text_shuffled = np.array(x_text)[shuffle_indices]
+#print(x_text_shuffled[:10])
+#print(x_shuffled[:10])
+#print(y_shuffled[:10])
 
 # Split train/test set.
 val_sample_index = -int(FLAGS.train_val_split * len(y))
@@ -105,7 +112,7 @@ with tf.Graph().as_default():
 
         # Define training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
-        optimizer = tf.train.AdamOptimizer(1e-3)
+        optimizer = tf.train.AdamOptimizer(1e-4)
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 

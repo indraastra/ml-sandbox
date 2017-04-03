@@ -12,7 +12,7 @@ class TextCNN(object):
                  embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
         # Placeholders for input, output and dropout
         self.input_x = tf.placeholder(tf.int32, [None, sequence_length], name="input_x")
-        self.input_y = tf.placeholder(tf.int32, [None, 1], name="input_y")
+        self.input_y = tf.placeholder(tf.int32, [None], name="input_y")
         y_one_hot = tf.one_hot(self.input_y, num_classes)
         self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
@@ -61,16 +61,16 @@ class TextCNN(object):
 		# Final (unnormalized) scores and predictions
         with tf.name_scope("output"):
             W = tf.get_variable(
-					"W",
-					shape=[num_filters_total, num_classes],
-					initializer=tf.contrib.layers.xavier_initializer())
+                    "W",
+                    shape=[num_filters_total, num_classes],
+                    initializer=tf.contrib.layers.xavier_initializer())
             b = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b")
             l2_loss += tf.nn.l2_loss(W)
             l2_loss += tf.nn.l2_loss(b)
             self.scores = tf.nn.xw_plus_b(self.h_drop, W, b, name="scores")
             self.predictions = tf.cast(tf.argmax(self.scores, 1, name="predictions"), tf.int32)
 
-        # Calculate  cross-entropy loss
+        # Calculate cross-entropy loss
         with tf.name_scope("loss"):
             losses = tf.nn.softmax_cross_entropy_with_logits(
                     logits=self.scores, labels=y_one_hot)

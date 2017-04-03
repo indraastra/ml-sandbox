@@ -19,7 +19,8 @@ def load_lines(file_path):
     with open(file_path, 'r', errors='ignore') as file:
         for line in file:
             clean_line = tokenize_data(line)
-            if clean_line: yield clean_line
+            if clean_line and len(clean_line) > 2:
+                yield clean_line
 
 
 def load_data(data_dir, per_label_file_limit=1000):
