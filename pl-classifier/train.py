@@ -6,6 +6,7 @@
 import tensorflow as tf
 import numpy as np
 import os
+import pickle
 import time
 import tensorflow as tf
 import numpy as np
@@ -66,15 +67,11 @@ print('Num labels: {}'.format(len(labels)))
 print()
 
 # Build vocabulary.
-def passthrough_tokenizer(iter):
-    for tokens in iter:
-        yield tokens
-
 max_document_length = min(max(len(l) for l in x_text), FLAGS.max_tokens_per_line)
 print('Max document length: {:d}'.format(max_document_length))
 vocab_processor = learn.preprocessing.VocabularyProcessor(
         max_document_length,
-        tokenizer_fn=passthrough_tokenizer,
+        tokenizer_fn=data.passthrough_tokenizer,
         min_frequency=FLAGS.min_word_frequency)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
 y = np.array(y)
@@ -154,6 +151,10 @@ with tf.Graph().as_default():
 
         # Write vocabulary
         vocab_processor.save(os.path.join(out_dir, "vocab"))
+
+        # Write labels
+        with open(os.path.join(out_dir, 'labels'), 'wb') as label_file:
+            pickle.dump(labels, label_file)
 
         def train_step(x_batch, y_batch):
             """

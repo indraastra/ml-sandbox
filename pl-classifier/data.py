@@ -15,6 +15,11 @@ def tokenize_data(string):
     return string.strip().lower().split(' ')
 
 
+def passthrough_tokenizer(iter):
+    for tokens in iter:
+        yield tokens
+
+
 def load_lines(file_path):
     with open(file_path, 'r', errors='ignore') as file:
         for line in file:
